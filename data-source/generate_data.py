@@ -8,9 +8,13 @@ fake = Faker()
 
 # CONFIGURATION
 COUNTS = {"orders": 1000, "support": 300, "csat": 100}
-ERROR_RATE = 0.05 
-SUPPORT_REASONS = ['Order not received', 'Wrong Order', 'Incorrect Charge', 'Bought by mistake', 'Damaged Item', 'Delayed Delivery']
+ERROR_RATE = 0.07 
+
+ORDER_STATUS = ['Completed', 'Cancelled', 'Returned']
+PRODUCT_CATEGORY = ['Electronics', 'Apparel', 'Home', 'Beauty']
+SUPPORT_REASONS = ['order_not_received', 'wrong_order', 'incorrect_charge', 'bought_by_mistake', 'damaged_item', 'delayed_delivery']
 CHANNELS = ['phone', 'email', 'live chat']
+
 
 def generate_data():
     # --- STAGE 1: GENERATE CLEAN DATA FIRST (Ensures IDs exist for linking) ---
@@ -24,11 +28,11 @@ def generate_data():
             "customer_name": fake.name(),
             "customer_email": fake.email(),
             "product_id": f"PROD{random.randint(100, 200)}",
-            "product_category": random.choice(["Electronics", "Apparel", "Home", "Beauty"]),
+            "product_category": random.choice(PRODUCT_CATEGORY),
             "unit_price": round(random.uniform(20, 500), 2),
             "quantity": random.randint(1, 10),
             "country": fake.country_code(),
-            "order_status": random.choice(["Completed", "Cancelled", "Returned"]),
+            "order_status": random.choice(ORDER_STATUS),
             "order_date": fake.date_between(start_date='-90d', end_date='today')
         })
     df_orders = pd.DataFrame(orders)
@@ -59,18 +63,64 @@ def generate_data():
     df_csat = pd.DataFrame(csat)
 
     # --- STAGE 2: INJECT ERRORS (Post-Generation back-editing) ---
-    inject_errors(df_orders, "orders")
-    inject_errors(df_support, "support")
-    inject_errors(df_csat, "csat")
+    inject_errors(df_orders)
+    inject_errors(df_support)
+    inject_errors(df_csat)
 
     # --- STAGE 3: SAVE TO TARGET DIRECTORY ---
     base_path = os.path.dirname(os.path.abspath(__file__))
     target_dir = os.path.join(base_path, "data")
-    if not os.path.exists(target_dir): os.makedirs(target_dir)
+    if not os.path.exists(target_dir): 
+        os.makedirs(target_dir)
 
     df_orders.to_csv(os.path.join(target_dir, "raw_orders.csv"), index=False)
     df_support.to_csv(os.path.join(target_dir, "raw_support.csv"), index=False)
     df_csat.to_csv(os.path.join(target_dir, "raw_csat.csv"), index=False)
     
     print(f"Success! 3 tables generated with {int(ERROR_RATE*100)}% errors.")
-    print(f"Files saved to: {target_dir}")
+
+def inject_errors(df):
+    """
+    Randomly selects rows to corrupt. 
+    Includes: nulls (all IDs), duplicates, negatives, out-of-range, and future dates.
+    """
+    num_errors = int(len(df) * ERROR_RATE)
+    for _ in range(num_errors):
+        row = random.randint(0, len(df) - 1)
+
+        # Build dynamic error list based on available columns
+        error_options = [
+            "null_identify", "duplicate_pk", "future_date", 
+            "negative_value", "out_of_bounds", "invalid_category"
+            ]
+        
+        # if "unit_price" in df.columns: error_options.append("negative_value")
+        # if "csat_score" in df.columns: error_options.append("out_of_bounds")
+
+        error_type = random.choice(error_options)
+
+        if error_type == "null_identity":
+            col = random.choice(["order_id", "customer_id", "product_id"])
+            df.at[row, col] = None
+        
+        elif error_type == "negative_value":
+            col = random.choice(["unit_price", "quantity"])
+            df.at[row, col] = -random.uniform(1,100)
+        
+        elif error_type == "future_date": 
+            df.at[row, "order_date"] = datetime.now() + timedelta(days=30)
+        
+        elif error_type == "invalid_category":
+            df.at[row, "product_category"] = "Others"
+        
+        elif error_type == "out_of_bounds": 
+            df.at[row, "csat_score"] = random.randint(-10, 10)
+        
+        elif error_type == "duplicate":
+            if "order_id" in df.columns:
+                df.at[row, "order_id"] = "ORD1000"
+            elif "chat_id" in df.columns:
+                df.at[row, "chat_id"]  = "CHT5000"
+
+if __name__ == "__main__":
+    generate_data()
