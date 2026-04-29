@@ -89,10 +89,16 @@ def inject_errors(df):
         row = random.randint(0, len(df) - 1)
 
         # Build dynamic error list based on available columns
-        error_options = [
-            "null_identify", "duplicate_pk", "future_date", 
-            "negative_value", "out_of_bounds", "invalid_category"
-            ]
+        error_options = ["null_identify", "duplicate_pk"]
+
+        if "order_date" in df.columns: 
+            error_options.append("future_date")
+        if "unit_price" in df.columns or "quantity" in df.columns:
+            error_options.append("negative_value")
+        if "product_category" in df.columns:
+            error_options.append("invalid_category")
+        if "csat_score" in df.columns:
+            error_options.append("out_of_bounds")
         
         # if "unit_price" in df.columns: error_options.append("negative_value")
         # if "csat_score" in df.columns: error_options.append("out_of_bounds")
