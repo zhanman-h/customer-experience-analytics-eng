@@ -8,10 +8,10 @@ WITH raw_orders AS (
 cleaned AS (
     SELECT 
         order_id,
-        COALESCE(customer_id, -1) AS customer_id,
+        COALESCE(CAST(customer_id AS integer), -1) AS customer_id,
         customer_name,
         customer_email, 
-        COALESCE(product_id, -1) AS product_id,
+        COALESCE(CAST(product_id AS integer), -1) AS product_id,
         product_category,
         CASE 
             WHEN unit_price > 0 THEN unit_price
@@ -51,6 +51,6 @@ SELECT
     unit_price,
     quantity
 FROM deduplicated
-WHERE row_number = 1; 
+WHERE row_number = 1
  
 
