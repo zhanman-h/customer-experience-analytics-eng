@@ -8,10 +8,10 @@ WITH raw_orders AS (
 cleaned AS (
     SELECT 
         order_id,
-        COALESCE(CAST(customer_id AS integer), -1) AS customer_id,
+        COALESCE(customer_id, 'CUST501') AS customer_id,
         customer_name,
         customer_email, 
-        COALESCE(CAST(product_id AS integer), -1) AS product_id,
+        COALESCE(product_id, 'PROD201') AS product_id,
         product_category,
         CASE 
             WHEN unit_price > 0 THEN unit_price
