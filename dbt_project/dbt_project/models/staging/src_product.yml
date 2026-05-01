@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw_data
+    schema: dev_schema
+    description: "Raw data seeded from the Python chaos generator."
+    tables:
+      - name: raw_orders
+      - name: raw_support
+      - name: raw_csat

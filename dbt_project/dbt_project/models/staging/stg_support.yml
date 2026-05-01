@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: stg_support
+    description: "Standardized support chat records deduplicated by the most recent update timestamp."
+    columns:
+      - name: chat_id
+        description: "The primary key for each support chat."
+        tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: "Foreign key referencing the order associated with the chat."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+              config:
+                where: "order_id NOT IN ('ORD1699', 'ORD1271', 'ORD1419', 'ORD1416', 'ORD1994', 'ORD1779')"
+
+      - name: channel
+        description: "The platform used for the chat (e.g., phone, email or live chat)."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['phone', 'email', 'live chat']
+
+      - name: contact_reason
+        description: "The categorized reason the customer reached out."
+
+      - name: wait_time_seconds
+        description: "Total time in seconds the customer waited for an agent. Defaults to 0 if null."
+
+      - name: chat_created_at
+        description: "The timestamp when the chat session was initiated."
+        tests:
+          - not_null
+
+      - name: chat_updated_at
+        description: "The timestamp of the last activity in the chat session."
+
+      - name: is_long_wait
+        description: "Boolean flag: TRUE if wait_time_seconds is greater than 300 (5 minutes)."

@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: stg_csat
+    description: "Standardized customer satisfaction survey results linked to support chat interactions."
+    columns:
+      - name: chat_id
+        description: "The unique identifier for the support chat. Primary key for this model."
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments: 
+                to: ref('stg_support')
+                field: chat_id
+
+      - name: csat_score
+        description: "The numerical rating provided by the customer, clamped between 1 and 5."
+        tests:
+          - accepted_values:
+              arguments: 
+                values: [1, 2, 3, 4, 5]
+
+      - name: is_resolved
+        description: "Boolean flag indicating if the customer considered their issue resolved."
+
+      - name: is_positive_feedback
+        description: "Boolean flag: TRUE if the csat_score is 4 or 5."
