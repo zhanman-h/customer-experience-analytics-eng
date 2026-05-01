@@ -38,7 +38,8 @@ deduplicated AS (
     FROM cleaned
 )
 
-SELECT 
+SELECT
+    {{ dbt_utils.generate_surrogate_key(['order_id', 'order_date']) }} as order_pk,
     order_id, 
     order_status,
     order_date,

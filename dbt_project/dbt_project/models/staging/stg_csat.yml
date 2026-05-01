@@ -4,6 +4,12 @@ models:
   - name: stg_csat
     description: "Standardized customer satisfaction survey results linked to support chat interactions."
     columns:
+      - name: csat_pk
+        description: "Hashed surrogate key for the CSAT record."
+        tests:
+          - unique
+          - not_null
+          
       - name: chat_id
         description: "The unique identifier for the support chat. Primary key for this model."
         tests:

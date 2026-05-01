@@ -4,6 +4,12 @@ models:
   - name: stg_support
     description: "Standardized support chat records deduplicated by the most recent update timestamp."
     columns:
+      - name: support_pk
+        description: "Hashed surrogate key for the support ticket."
+        tests:
+          - unique
+          - not_null
+          
       - name: chat_id
         description: "The primary key for each support chat."
         tests:

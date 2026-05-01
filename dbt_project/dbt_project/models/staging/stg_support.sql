@@ -35,6 +35,7 @@ deduplicated AS (
 )
 
 SELECT
+    {{ dbt_utils.generate_surrogate_key(['chat_id', 'chat_created_at']) }} AS support_pk,
     chat_id,
     order_id,
     channel, 
