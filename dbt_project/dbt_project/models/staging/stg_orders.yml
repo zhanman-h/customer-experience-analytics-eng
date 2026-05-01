@@ -12,8 +12,9 @@ models:
 
       - name: order_status
         tests:
-          accepted_values:
-            values: ['Completed', 'Cancelled', 'Returned']
+          - accepted_values:
+              arguments: 
+                values: ['Completed', 'Cancelled', 'Returned']
 
       - name: customer_id
         description: "The unique identifier for a customer; defaults to 'CUST501' if missing or null."

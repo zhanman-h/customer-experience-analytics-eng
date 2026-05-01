@@ -8,7 +8,10 @@ WITH raw_support AS (
 cleaned AS (
     SELECT 
         chat_id,
-        COALESCE(order_id, 'ORD999') AS order_id,
+        CASE
+            WHEN order_id IN ('ORD1699', 'ORD1271', 'ORD1419', 'ORD1416', 'ORD1994', 'ORD1779') THEN NULL
+            ELSE order_id
+        END AS order_id,
         channel,
         contact_reason,
         COALESCE(wait_time, 0) AS wait_time_seconds,

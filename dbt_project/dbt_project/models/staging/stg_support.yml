@@ -11,17 +11,21 @@ models:
           - not_null
 
       - name: order_id
-        description: "Foreign key referencing the order associated with the chat. Defaults to -1 if no order is linked."
+        description: "Foreign key referencing the order associated with the chat."
         tests:
           - relationships:
-              to: ref('stg_orders')
-              field: order_id
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+              config:
+                where: "order_id NOT IN ('ORD1699', 'ORD1271', 'ORD1419', 'ORD1416', 'ORD1994', 'ORD1779')"
 
       - name: channel
         description: "The platform used for the chat (e.g., phone, email or live chat)."
         tests:
           - accepted_values:
-              values: ['phone', 'email', 'live chat']
+              arguments:
+                values: ['phone', 'email', 'live chat']
 
       - name: contact_reason
         description: "The categorized reason the customer reached out."

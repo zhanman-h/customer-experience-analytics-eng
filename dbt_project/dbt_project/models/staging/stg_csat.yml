@@ -10,14 +10,16 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('stg_support')
-              field: chat_id
+              arguments: 
+                to: ref('stg_support')
+                field: chat_id
 
       - name: csat_score
         description: "The numerical rating provided by the customer, clamped between 1 and 5."
         tests:
           - accepted_values:
-              values: [1, 2, 3, 4, 5]
+              arguments: 
+                values: [1, 2, 3, 4, 5]
 
       - name: is_resolved
         description: "Boolean flag indicating if the customer considered their issue resolved."
