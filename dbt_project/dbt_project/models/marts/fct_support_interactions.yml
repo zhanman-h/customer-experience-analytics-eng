@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: fct_support_interactions
+    description: >
+      A granular fact table containing every support interaction. 
+      It serves as the base for calculating operational KPIs like SLA compliance 
+      and resolution efficiency.
+    columns:
+      - name: support_pk
+        description: "Primary key (surrogate) of the support interaction."
+        tests:
+          - unique
+          - not_null
+
+      - name: chat_id
+        description: "The unique identifier for the specific chat session."
+
+      - name: order_id
+        description: "The order associated with the support ticket, if applicable."
+
+      - name: wait_time_minutes
+        description: "Standardized customer wait time calculated via macro."
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+      - name: session_duration_minutes
+        description: "The total handle time from chat start to finish."
+
+      - name: is_wait_sla_breach
+        description: "Boolean flag: TRUE if wait time exceeded 180 seconds."
+
+      - name: csat_score
+        description: "The numerical score (1-5) provided by the customer."
+
+      - name: sentiment_category
+        description: "The business-friendly label (Promoter, Passive, Detractor) based on CSAT."

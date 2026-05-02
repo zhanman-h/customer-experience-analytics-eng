@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: "Dimension table containing product categories and pricing information."
+    columns:
+      - name: product_id
+        description: "Unique identifier for the product."
+        tests:
+          - unique
+          - not_null
+
+      - name: product_category
+        description: "The business category the product belongs to (e.g., Electronics, Home)."

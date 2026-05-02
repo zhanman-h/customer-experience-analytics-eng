@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: >
+      A dimension table containing descriptive attributes for customers, 
+      including high-level segments (High, Mid, Low value) based on Lifetime Value (LTV).
+    columns:
+      - name: customer_id
+        description: "Unique identifier for the customer."
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_tier
+        description: "Business-defined segment based on LTV thresholds: >500 (High), 100-500 (Mid), <100 (Low)."
+        tests:
+          - accepted_values:
+              values: ['High Value', 'Mid Value', 'Low Value']
+
+      - name: total_lifetime_revenue
+        description: "Total revenue aggregated from all historical orders."
+
+      - name: days_since_last_purchase
+        description: "Recency metric indicating the number of days since the customer's last order."

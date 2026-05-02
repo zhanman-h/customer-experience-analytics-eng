@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: fct_customer_experience
+    description: >
+      The central fact table for Customer Experience Analytics. It joins support efficiency 
+      (SLA breaches), customer sentiment (CSAT), and business value (Customer LTV).
+    columns:
+      - name: support_pk
+        description: "The primary key linking back to the specific support interaction."
+        tests:
+          - unique
+          - not_null
+
+      - name: is_wait_sla_breach
+        description: "Flag indicating if the customer's wait time exceeded the 3-minute SLA threshold."
+
+      - name: sentiment_category
+        description: "Qualitative categorization of customer feedback (Promoter, Passive, Detractor)."
+        tests:
+          - accepted_values:
+              values: ['Promoter', 'Passive', 'Detractor', 'No Feedback']
+
+      - name: customer_ltv
+        description: "The Lifetime Value of the customer at the time of the interaction."
+
+      - name: wait_time_minutes
+        description: "The duration the customer waited for support, standardized via macro."
