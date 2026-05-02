@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: int_support_performance
+    description: "Transforms support data into efficiency metrics using custom macros. Analyzes session length and wait-time latency."
+    columns:
+      - name: support_pk
+        description: "The primary surrogate key for the support interaction."
+        tests:
+          - unique
+          - not_null
+
+      - name: session_duration_minutes
+        description: "Total duration of the chat session from creation to last update."
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+      - name: wait_time_minutes
+        description: "Customer wait time in minutes."
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+      - name: is_wait_sla_breach
+        description: "Boolean flag for wait times exceeding 3 minutes."
+
+      - name: contact_reason
+        description: "The categorized reason for the customer contact."

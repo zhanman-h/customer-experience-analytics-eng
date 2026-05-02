@@ -4,6 +4,12 @@ models:
   - name: stg_orders
     description: "Cleaned and deduplicated order data from the raw sales system."
     columns:
+      - name: order_pk
+        description: "Hashed surrogate key for the order, generated from order_id and order_date."
+        tests:
+          - unique
+          - not_null
+          
       - name: order_id
         description: "The primary key for each order, deduplicated by the most recent order date."
         tests:

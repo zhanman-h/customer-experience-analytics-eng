@@ -38,7 +38,8 @@ deduplicated AS (
     FROM cleaned
 )
 
-SELECT 
+SELECT
+    {{ dbt_utils.generate_surrogate_key(['order_id', 'order_date']) }} as order_pk,
     order_id, 
     order_status,
     order_date,
@@ -49,7 +50,8 @@ SELECT
     product_id,
     product_category,
     unit_price,
-    quantity
+    quantity,
+    {{ get_order_amount('unit_price', 'quantity') }} as order_amount
 FROM deduplicated
 WHERE row_number = 1
  

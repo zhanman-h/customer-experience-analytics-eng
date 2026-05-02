@@ -31,7 +31,8 @@ deduplicated AS (
     FROM cleaned
 )
 
-SELECT 
+SELECT
+    {{ dbt_utils.generate_surrogate_key(['chat_id']) }} as csat_pk,
     chat_id,
     csat_score,
     is_resolved,

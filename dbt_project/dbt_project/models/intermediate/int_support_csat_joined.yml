@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: int_support_csat_joined
+    description: >
+      Links support efficiency metrics to customer sentiment scores. 
+      This is the primary source for the fct_customer_experience mart.
+    columns:
+      - name: support_pk
+        description: "Primary key from the support performance layer."
+        tests:
+          - unique
+          - not_null
+
+      - name: sentiment_category
+        description: "Qualitative categorization of the CSAT score (Promoter, Passive, Detractor)."
+        tests:
+          - accepted_values:
+              values: ['Promoter', 'Passive', 'Detractor', 'No Feedback']
+
+      - name: csat_score
+        description: "The raw CSat score (1-5) joined from stg_csat."
+
+      - name: is_wait_sla_breach
+        description: "Flag indicating if the customer's wait time exceeded the SLA threshold."
