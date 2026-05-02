@@ -50,7 +50,8 @@ SELECT
     product_id,
     product_category,
     unit_price,
-    quantity
+    quantity,
+    {{ get_order_amount('unit_price', 'quantity') }} as order_amount
 FROM deduplicated
 WHERE row_number = 1
  
