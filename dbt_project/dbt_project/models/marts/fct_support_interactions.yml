@@ -27,6 +27,9 @@ models:
 
       - name: session_duration_minutes
         description: "The total handle time from chat start to finish."
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
 
       - name: is_wait_sla_breach
         description: "Boolean flag: TRUE if wait time exceeded 180 seconds."
